@@ -1,4 +1,4 @@
-# 🫀 CoroPredict – Intelligent CAD Prediction System
+# 🫀 CoroPredict – Intelligent CAD Prediction Assistant System
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Laravel](https://img.shields.io/badge/Laravel-12-red?logo=laravel)
