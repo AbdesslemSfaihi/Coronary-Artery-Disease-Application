@@ -51,14 +51,26 @@ php artisan key:generate
 php artisan migrate
 php artisan serve
 
-## Setup FastAPI
+## ⚙️ Setup FastAPI
 
-Create a folder containing "main_FASTAPI" and requirements.txt files, in the cmd run:
+1. Create a folder containing:
+   - `main.py` (your FastAPI code)
+   - `requirements.txt`
+
+2. In the terminal, run the following:
+
+```bash
+# Create virtual environment
 python -m venv venv
+```
+# Activate venv
 source venv/bin/activate   # (Linux/Mac)
 venv\Scripts\activate      # (Windows)
-pip install -r requirements.txt 
---(this is the content of requiremments.txt)
+
+# Install dependencies
+pip install -r requirements.txt
+📦 requirements.txt
+
 fastapi==0.115.0
 uvicorn==0.30.1
 pydantic==2.9.2
@@ -67,18 +79,20 @@ numpy==1.26.4
 pandas==2.2.3
 scikit-learn==1.5.1
 xgboost==2.1.1
---
+Start the FastAPI server:
+
 uvicorn main:app --reload
-
----
-
 🧠 Machine Learning Model
 Algorithms Used: Logistic Regression, Random Forest, XGBoost
-Final Approach: Stacking Ensemble with model calibration
+
+Final Approach: Stacking Ensemble with calibration
+
 Performance:
-Accuracy: 83%
-ROC AUC: 0.865
-Balanced precision & recall
 
+✅ Accuracy: 83%
 
+📈 ROC AUC: 0.865
 
+⚖️ Balanced precision & recall
+
+---
