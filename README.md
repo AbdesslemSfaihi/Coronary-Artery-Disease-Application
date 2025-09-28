@@ -64,8 +64,8 @@ php artisan serve
 python -m venv venv
 ```
 # Activate venv
-source venv/bin/activate   # (Linux/Mac)
-venv\Scripts\activate      # (Windows)
+source venv/bin/activate   # (Linux/Mac) 
+ venv\Scripts\activate      # (Windows)
 
 # Install dependencies
 pip install -r requirements.txt
