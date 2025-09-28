@@ -1,4 +1,4 @@
-# 🫀 CoroPredict – Intelligent CAD Prediction Assistant System
+# 🫀 CARDIA – Intelligent CAD Prediction Assistant System
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Laravel](https://img.shields.io/badge/Laravel-12-red?logo=laravel)
@@ -9,7 +9,7 @@
 ---
 
 ## 📌 Overview
-**CoroPredict** is a full-stack intelligent system for predicting **Coronary Artery Disease (CAD)** using **machine learning**.  
+**CARDIA** is a full-stack intelligent system for predicting **Coronary Artery Disease (CAD)** using **machine learning**.  
 The system helps doctors input patient data and receive **real-time CAD risk predictions** along with **risk-based recommendations**.
 
 Developed as part of a **Software Engineering graduation thesis (2025)**.
