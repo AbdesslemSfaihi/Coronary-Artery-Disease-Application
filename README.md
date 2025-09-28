@@ -7,6 +7,44 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+# 🫀 CoroPredict – Intelligent CAD Prediction System
+
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
+![Laravel](https://img.shields.io/badge/Laravel-12-red?logo=laravel)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green?logo=fastapi)
+![Python](https://img.shields.io/badge/Python-3.10-yellow?logo=python)
+![PHP](https://img.shields.io/badge/PHP-8.2-purple?logo=php)
+
+---
+
+## 📌 Overview
+**CoroPredict** is a full-stack intelligent system for predicting **Coronary Artery Disease (CAD)** using **machine learning**.  
+The system helps doctors input patient data and receive **real-time CAD risk predictions** along with **risk-based recommendations**.
+
+Developed as part of a **Software Engineering graduation thesis (2025)**.
+
+---
+
+## 🚀 Features
+- 🔐 **Secure Authentication** for doctors  
+- 📝 **Patient Data Entry** (clinical, biological, ECG & lifestyle data)  
+- ⚡ **Real-Time CAD Risk Prediction** using a trained ML stacking model  
+- 📊 **Risk-based Recommendations** for follow-up and treatment guidance  
+- 🌐 **Web-Based Interface** with responsive and user-friendly design  
+
+---
+
+## 🛠️ Tech Stack
+- **Frontend & Backend**: [Laravel 12](https://laravel.com/)  
+- **Machine Learning API**: [FastAPI](https://fastapi.tiangolo.com/) + Python (scikit-learn, XGBoost)  
+- **Database**: MySQL / MariaDB  
+- **Deployment**: Uvicorn (FastAPI) + Laravel Artisan  
+
+---
+
+
+
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
