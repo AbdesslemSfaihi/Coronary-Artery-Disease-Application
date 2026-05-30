@@ -44,4 +44,10 @@ return [
         'url' => env('MODEL_API_URL', 'http://127.0.0.1:8000'),
     ],
 
+    // Tesseract OCR binary. Leave TESSERACT_PATH unset on Linux/Railway to use
+    // the binary on PATH; on local Windows set it to the .exe full path.
+    'tesseract' => [
+        'path' => env('TESSERACT_PATH'),
+    ],
+
 ];

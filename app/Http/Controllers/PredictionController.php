@@ -175,9 +175,17 @@ class PredictionController extends Controller
 
         $imagePath = $request->file('image')->getPathname();
 
-        $text = (new TesseractOCR($imagePath))
-            ->executable('C:/Program Files/Tesseract-OCR/tesseract.exe')
-            ->run();
+        try {
+            $ocr = new TesseractOCR($imagePath);
+            $tesseractPath = config('services.tesseract.path');
+            if (!empty($tesseractPath)) {
+                $ocr->executable($tesseractPath);
+            }
+            $text = $ocr->run();
+        } catch (\Throwable $e) {
+            return redirect()->route('predict.form', ['step' => 4])
+                ->with('error', 'Automatic extraction from the image is unavailable on this server. Please enter the ECG values manually.');
+        }
 
         $fieldMap = [
             'PR' => 'ECG_PR_interval',
