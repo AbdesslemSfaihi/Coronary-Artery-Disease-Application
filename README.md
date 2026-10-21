@@ -1,61 +1,177 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CARDIA — Coronary Artery Disease Prediction
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+CARDIA is a web application that estimates a patient's risk of **coronary artery disease (CAD)** from routine clinical data: medical history, blood work, ECG measurements and lifestyle factors. A clinician fills in a guided 5-step form. The app sends the data to a machine-learning model and shows the prediction with its class probabilities.
 
-## About Laravel
+![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-SQLite-4479A1?logo=mysql&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)
+![Railway](https://img.shields.io/badge/Deploy-Railway-0B0D0E?logo=railway&logoColor=white)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> ⚠️ **Disclaimer:** this is a research / educational project. It is **not** a certified medical device and must not be used for real diagnosis.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Features
 
-## Learning Laravel
+- **Guided 5-step prediction form.** Each step is validated on the server, and you can't skip ahead.
+  1. Demographics & BMI class
+  2. Medical history (hypertension, diabetes, kidney failure, COPD)
+  3. Biology (CRP, MDRD class, fasting glucose, HDL-C, HbA1c, non-HDL)
+  4. ECG (PR interval, QRS duration/fragmentation, ST amplitudes, Q wave, TPE…)
+  5. Habits & symptoms (smoking, chest pain)
+- **ECG auto-fill from an image.** Upload a photo of an ECG report and Tesseract OCR extracts the PR, QRS and ST values into step 4.
+- **ML-powered prediction.** The form data goes to an external FastAPI model service. The result page shows the predicted class and the probabilities.
+- **Prediction history.** Every prediction is stored in the database.
+- **Admin dashboard.** Patient statistics (age distribution, CAD vs. non-CAD) built from an Excel dataset, plus user management.
+- **Authentication & roles.** Login, registration, email verification and profile management via Laravel Breeze, with `user` / `admin` roles.
+- **Open demo.** Guests can try the model without creating an account.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Architecture
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+The Laravel app does **not** contain the model itself. The model runs as a separate Python (FastAPI) service, and Laravel calls it over HTTP:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```
+┌──────────────┐   5-step form   ┌─────────────────────┐   POST /predict   ┌──────────────────────┐
+│   Browser    │ ──────────────► │   Laravel 12 app    │ ────────────────► │  FastAPI model API   │
+│ (Blade, Vite)│ ◄────────────── │  (this repository)  │ ◄──────────────── │ (Hugging Face Space) │
+└──────────────┘   result page   └─────────┬───────────┘   prediction +    └──────────────────────┘
+                                           │               probabilities
+                                ┌──────────┴──────────┐
+                                │  MySQL / SQLite     │   users, prediction_results
+                                │  Tesseract OCR      │   ECG image → form values
+                                └─────────────────────┘
+```
 
-## Laravel Sponsors
+Because the model is a separate service, it can be retrained and redeployed without touching the web app, as long as the `/predict` contract stays the same.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Tech stack
 
-### Premium Partners
+| Layer      | Technology                                                       |
+| ---------- | ---------------------------------------------------------------- |
+| Backend    | PHP 8.2+, Laravel 12, Laravel Breeze (auth)                      |
+| Frontend   | Blade templates, Vite, Bootstrap 5, Tailwind CSS, Alpine.js      |
+| Database   | MySQL (production), SQLite (local default)                       |
+| ML service | Python / FastAPI, hosted separately (e.g. Hugging Face Spaces)   |
+| OCR        | Tesseract via `thiagoalessio/tesseract_ocr`                      |
+| Data       | `maatwebsite/excel` for the dashboard dataset                    |
+| Deployment | Railway (Railpack builder)                                       |
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+## Getting started
 
-## Contributing
+### Prerequisites
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- PHP **8.2+** with the `gd`, `zip` and `pdo_mysql` extensions
+- Composer
+- Node.js 18+ and npm
+- *(optional)* [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) for ECG image extraction
+- A running instance of the CAD model API (local or remote)
 
-## Code of Conduct
+### Installation
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+git clone https://github.com/AbdesslemSfaihi/Coronary-Artery-Disease-Application.git
+cd Coronary-Artery-Disease-Application
 
-## Security Vulnerabilities
+composer install
+npm install
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+cp .env.example .env
+php artisan key:generate
 
-## License
+php artisan migrate --seed   # creates tables + the admin account
+npm run build
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Run locally
+
+```bash
+composer dev
+```
+
+This starts the Laravel server, queue worker, log viewer and Vite together. Open <http://localhost:8000>.
+
+> If your model API also runs locally on port 8000, start Laravel on another port (`php artisan serve --port=8080`) and point `MODEL_API_URL` at the model.
+
+## Configuration
+
+Besides the standard Laravel variables, set these in `.env`:
+
+| Variable          | Description                                                    | Default                 |
+| ----------------- | -------------------------------------------------------------- | ----------------------- |
+| `MODEL_API_URL`   | Base URL of the FastAPI model service (`/predict` is appended) | `http://127.0.0.1:8000` |
+| `TESSERACT_PATH`  | Full path to the Tesseract binary. Leave empty on Linux to use `PATH`; on Windows, point it at `tesseract.exe` | *(empty)* |
+| `DB_CONNECTION`   | `sqlite` locally, `mysql` in production                        | `sqlite`                |
+
+If Tesseract isn't installed, the app still works. The image upload just shows a message asking for manual entry.
+
+## Model API contract
+
+`POST {MODEL_API_URL}/predict`
+
+```jsonc
+// Request
+{
+  "data": {
+    "Age": 62,
+    "Sexe": 1,
+    "Biologie_HbA1C": 7.1,
+    "ECG_QRS duration (ms)": 96,
+    // … 28 features in total, see PredictionController::submitForm
+  }
+}
+
+// Response
+{
+  "prediction": 1,
+  "probabilities": [0.23, 0.77]
+}
+```
+
+The feature names must match the columns the model was trained on exactly, including accents and trailing spaces.
+
+## Project structure
+
+```
+app/
+├── Http/Controllers/
+│   ├── PredictionController.php   # multi-step form, OCR, call to model API
+│   ├── SeverityController.php     # severity staging (currently mocked)
+│   ├── DashboardController.php    # admin statistics from Excel dataset
+│   └── Admin/UserController.php   # admin user management
+└── Models/
+    ├── PredictionResult.php
+    └── User.php
+resources/views/
+├── predict-form-step1..5.blade.php
+├── predict-result.blade.php
+└── admin/
+routes/web.php
+railway.json                       # Railway build & deploy config
+```
+
+## Deployment (Railway)
+
+The project ships with a [`railway.json`](railway.json):
+
+- builds with **Railpack**
+- runs `php artisan migrate --force && php artisan db:seed --force` before each deploy
+- health check on `/up`
+
+Add a MySQL service in Railway, then set the `DB_*` variables, `APP_KEY`, `APP_URL` and `MODEL_API_URL` on the web service.
+
+## Testing
+
+```bash
+composer test
+```
+
+## Roadmap
+
+- [ ] Connect the severity classifier (`/classify`) to a real model (it currently returns a mock response)
+- [ ] Explainability (feature importance / SHAP) on the result page
+- [ ] Feature tests for the prediction flow
+
+## Author
+
+**Abdesslem Sfaihi** — [GitHub](https://github.com/AbdesslemSfaihi)
